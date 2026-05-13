@@ -1,5 +1,5 @@
-import UserProfile from '@/components/UserProfile'
-import Schedule from '@/components/Schedule'
+import UserProfile from '@/components/ui/UserProfile'
+import Schedule from '@/components/ui/Schedule'
 
 const schedules = [
   {

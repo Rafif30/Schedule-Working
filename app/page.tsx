@@ -1,5 +1,5 @@
 import { Calendar } from 'lucide-react';
-import ScheduleCard from '@/components/Form'
+import ScheduleCard from '@/components/ui/Form'
 
 export default function Home() {
   return (
