@@ -46,21 +46,72 @@ const schedules = [
   },
 ];
 
+const moduleNotDone = [
+  {
+    id: 1,
+    moduleName: 'Belanja',
+    moduleLink: 'https://google.com',
+    grade: null,
+  },
+  {
+    id: 2,
+    moduleName: 'Belanja',
+    moduleLink: 'https://google.com',
+    grade: null,
+  },
+  {
+    id: 3,
+    moduleName: 'Belanja',
+    moduleLink: 'https://google.com',
+    grade: null,
+  },
+  {
+    id: 4,
+    moduleName: 'Belanja',
+    moduleLink: 'https://google.com',
+    grade: null,
+  }
+]
+
+const moduleDone = [
+  {
+    id: 1,
+    moduleName: 'Belanja',
+    moduleLink: 'https://google.com',
+    grade: '90',
+  },
+  {
+    id: 2,
+    moduleName: 'Belanja',
+    moduleLink: 'https://google.com',
+    grade: '80',
+  },
+]
+
+const listModule = {
+  sumNotDone: 4,
+  sumDone: 2,
+  listNotDone: moduleNotDone,
+  listDone: moduleDone,
+}
+
 type Props = {
   params: {
     id: string;
   };
 };
 
-export default function SchedulePage({ params }: Props) {
+export default async function SchedulePage({ params }: Props) {
+  const { id } = await params
+  
   return (
     <main className="min-h-screen bg-[#F5F0E8] text-white">
       <div className="overflow-hidden bg-[#F5F0E8]">
         {/* User Profile */}
-        <UserProfile />
+        <UserProfile nik={id} />
 
         {/* Content */}
-        <Schedule schedules={schedules} />
+        <Schedule schedules={schedules} moduleList={listModule} />
       </div>
     </main>
   );

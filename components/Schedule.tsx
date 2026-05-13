@@ -2,33 +2,29 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CalendarDays, Clock3, MapPin, User } from 'lucide-react';
-import { ScheduleList, DetailRow, SummaryCard } from './List';
+import { ScheduleList, SummaryCard } from './List';
+import { DetailSchedule, DetailModule } from './Detail';
 import { useRouter } from 'next/navigation';
-
-type Schedule = {
-  id: number;
-  date: string;
-  day: string;
-  session: string;
-  time: string;
-  location: string;
-  pic: string;
-  sessionColor: string;
-};
+import { Schedules, ModuleList } from '@/types/schedule';
 
 type propsSchedules = {
-  schedules: Schedule[]
+  schedules: Schedules[]
+  moduleList: ModuleList
 }
 
-export default function Schedule({ schedules }: propsSchedules) {
-  const [selected, setSelected] = useState<Schedule | null>(null);
+export default function Schedule({ schedules, moduleList }: propsSchedules) {
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedules | null>(null);
+  const [selectedModul, setSelectedModul] = useState<'Done' | 'NotDone' | null>(null)
   const route = useRouter()
 
+  const goBack = () => {
+    setSelectedSchedule(null)
+    setSelectedModul(null)
+  }
   return (
     <div className="space-y-6">
       <AnimatePresence mode="wait">
-        {!selected ? (
+        {!selectedSchedule && !selectedModul ? (
           <motion.section
             key="grid"
             initial={{ opacity: 0, y: 20 }}
@@ -42,8 +38,8 @@ export default function Schedule({ schedules }: propsSchedules) {
             </h3>
 
             <div className="mb-8 grid md:grid-cols-6 grid-cols-2 gap-4">
-                <SummaryCard value="4" label="Done" />
-                <SummaryCard value="2" label="Not Done" />
+                <SummaryCard value={moduleList.sumNotDone} label="Not Done" onClick={() => setSelectedModul('NotDone')} />
+                <SummaryCard value={moduleList.sumDone} label="Done" onClick={() => setSelectedModul('Done')} />
             </div>
 
             <h3 className="mb-4 text-sm font-semibold tracking-[0.25em] text-[#1C2B4A] uppercase">
@@ -51,7 +47,7 @@ export default function Schedule({ schedules }: propsSchedules) {
             </h3>
             <div className="md:grid md:grid-cols-4 gap-4">
                 {schedules.map((item) => (
-                <ScheduleList key={`${item.date}-${item.session}`} item={item} onClick={() => setSelected(item)} />
+                <ScheduleList key={`${item.date}-${item.session}`} item={item} onClick={() => setSelectedSchedule(item)} />
                 ))}
             </div>
             <button
@@ -68,53 +64,36 @@ export default function Schedule({ schedules }: propsSchedules) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -20 }}
             transition={{ duration: 0.35 }}
-            className="mx-auto max-w-6xl overflow-hidden rounded-3xl bg-[#F3EFE8]"
+            className="mx-auto max-w-6xl p-6 rounded-3xl bg-[#F3EFE8]"
           >
 
-            {/* Detail */}
-            <div className="p-6 text-[#3B2F1E]">
-              <div className="mb-4 rounded-2xl border border-[#D8C8A2] bg-white p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="font-semibold">
-                      {selected.day}, {selected.date}
-                    </p>
-                    <p className="text-sm text-[#9C8B63]">
-                      Jadwal berlaku hari ini
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-[#C59D00] px-3 py-1 text-sm text-white">
-                    Hari ini
-                  </span>
-                </div>
-              </div>
+            {/* Detail Schedule*/}
+              {selectedSchedule && (
+                <DetailSchedule 
+                  date={selectedSchedule.date}
+                  day={selectedSchedule.day}
+                  session={selectedSchedule.session}
+                  time={selectedSchedule.time}
+                  location={selectedSchedule.location}
+                  pic={selectedSchedule.pic}
+                />
+              )}
 
-              <div className="overflow-hidden rounded-2xl border border-[#D8C8A2] bg-white">
-                <div className="flex items-center justify-between bg-[#C59D00] p-4 text-white">
-                  <div>
-                    <h4 className="text-xl font-semibold">{selected.session}</h4>
-                    <p className="text-sm text-white/80">Sesi kerja</p>
-                  </div>
-                  <span className="rounded-full bg-black/10 px-3 py-1 text-sm">
-                    Pagi
-                  </span>
-                </div>
-
-                <div className="divide-y divide-[#EADDBD] text-sm">
-                  <DetailRow icon={<MapPin className="h-4 w-4" />} label="Toko" value={selected.location} />
-                  <DetailRow icon={<User className="h-4 w-4" />} label="PIC" value={selected.pic} />
-                  <DetailRow icon={<CalendarDays className="h-4 w-4" />} label="Tanggal" value={`${selected.day}, ${selected.date}`} />
-                  <DetailRow icon={<Clock3 className="h-4 w-4" />} label="Jam kerja" value={selected.time} />
-                </div>
-              </div>
+              {/* Detail Module */}
+              {selectedModul && (
+                <DetailModule 
+                  typeModule={selectedModul}
+                  sumModule={moduleList[`sum${selectedModul}`]}
+                  listModule={moduleList[`list${selectedModul}`]}
+                />
+              )}
 
               <button
-                onClick={() => setSelected(null)}
+                onClick={goBack}
                 className="mt-6 w-full rounded-xl bg-[#C59D00] px-4 py-3 font-semibold text-white transition hover:brightness-110"
               >
                 Kembali ke List Jadwal
               </button>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,16 +1,8 @@
 import { Clock3, MapPin } from 'lucide-react';
+import { Schedules } from '@/types/schedule';
 
 type ScheduleListProps = {
-  item: {
-    date: string;
-    day: string;
-    session: string;
-    sessionColor: string;
-    today?: boolean;
-    time: string;
-    location: string;
-    active?: boolean;
-   };
+  item: Schedules;
    onClick: () => void
 };
 
@@ -24,20 +16,22 @@ export function ScheduleList({ item, onClick }: ScheduleListProps) {
         <div>
           <div className="flex items-center gap-3">
             <h4 className="text-2xl font-medium">{item.date}</h4>
-            {item.today && (
-              <span className="rounded-full bg-[#a67f02] px-3 py-1 text-xs text-white/90 font-medium">
-                Hari ini
-              </span>
-            )}
           </div>
           <p className="text-white/60">{item.day}</p>
         </div>
 
-        <span
-          className={`rounded-full px-4 py-1 text-sm font-medium ${item.sessionColor}`}
-        >
-          {item.session}
-        </span>
+        <div className='flex flex-col gap-3'>
+          <span
+            className={`rounded-full px-4 py-1 text-sm font-medium ${item.sessionColor}`}
+          >
+            {item.session}
+          </span>
+          {item.today && (
+            <span className="rounded-full bg-[#a67f02] px-4 py-1 text-xs text-white/90 font-medium">
+              Hari ini
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3 border-t border-white/10 pt-4">
@@ -76,14 +70,21 @@ export function DetailRow({
         {icon}
         <span>{label}</span>
       </div>
-      <span className="font-medium text-right">{value}</span>
+      {value.includes('http') ? (
+        <a href={value}>{value}</a>
+      ): (
+        <span className="font-medium text-right">{value}</span>
+      )}
     </div>
   );
 }
 
-export function SummaryCard({ value, label }: { value: string; label: string }) {
+export function SummaryCard({ value, label, onClick }: { value: string | number; label: string; onClick: () => void }) {
   return (
-    <div className="rounded-2xl border border-[#F5F0E8]/10 bg-[#fff] p-5">
+    <div 
+      className="rounded-2xl border border-[#F5F0E8]/10 bg-[#fff] p-5 hover:shadow-mdl transition-transform duration-300 hover:-translate-y-2 hover:cursor-pointer"
+      onClick={onClick}
+      >
       <p className="text-4xl font-semibold text-black">{value}</p>
       <p className="mt-2 text-sm text-black/60">{label}</p>
     </div>
