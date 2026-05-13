@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#F5F0E8]">
       {/* Header */}
-      <header className="mb-8 bg-[#C49A0A] px-6 py-5 shadow-lg">
+      <header className="mb-12 bg-[#C49A0A] px-6 py-5 shadow-lg">
         <div className='flex max-w-6xl mx-auto items-center gap-4'>
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#a67f02]">
             <Calendar />
@@ -22,7 +22,7 @@ export default function Home() {
         </div>
       </header>
       {/* Main Card */}
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl px-4 py-6">
         <ScheduleCard />
       </div>
     </main>

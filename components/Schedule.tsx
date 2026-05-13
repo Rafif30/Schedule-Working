@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CalendarDays, Clock3, MapPin, User, Briefcase } from 'lucide-react';
+import { CalendarDays, Clock3, MapPin, User } from 'lucide-react';
+import { ScheduleList, DetailRow, SummaryCard } from './List';
 import { useRouter } from 'next/navigation';
 
 type Schedule = {
@@ -12,48 +13,15 @@ type Schedule = {
   session: string;
   time: string;
   location: string;
-  employeeName: string;
-  position: string;
+  pic: string;
   sessionColor: string;
 };
 
-const schedules: Schedule[] = [
-  {
-    id: 1,
-    date: '12 Mei 2026',
-    day: 'Senin',
-    session: 'Sesi 1',
-    time: '08:00 - 14:00',
-    location: 'Toko Pusat A',
-    employeeName: 'Rudi Hartono',
-    position: 'Kasir',
-    sessionColor: 'bg-cyan-100 text-cyan-700',
-  },
-  {
-    id: 2,
-    date: '13 Mei 2026',
-    day: 'Selasa',
-    session: 'Sesi 2',
-    time: '14:00 - 20:00',
-    location: 'Toko Pusat A',
-    employeeName: 'Rudi Hartono',
-    position: 'Kasir',
-    sessionColor: 'bg-amber-100 text-amber-700',
-  },
-  {
-    id: 3,
-    date: '14 Mei 2026',
-    day: 'Rabu',
-    session: 'Sesi 1',
-    time: '08:00 - 14:00',
-    location: 'Cabang Malalayang',
-    employeeName: 'Rudi Hartono',
-    position: 'Kasir',
-    sessionColor: 'bg-cyan-100 text-cyan-700',
-  },
-];
+type propsSchedules = {
+  schedules: Schedule[]
+}
 
-export default function Schedule() {
+export default function Schedule({ schedules }: propsSchedules) {
   const [selected, setSelected] = useState<Schedule | null>(null);
   const route = useRouter()
 
@@ -133,11 +101,10 @@ export default function Schedule() {
                 </div>
 
                 <div className="divide-y divide-[#EADDBD] text-sm">
-                  <DetailRow icon={<User className="h-4 w-4" />} label="Nama" value={selected.employeeName} />
-                  <DetailRow icon={<Briefcase className="h-4 w-4" />} label="Jabatan" value={selected.position} />
+                  <DetailRow icon={<MapPin className="h-4 w-4" />} label="Toko" value={selected.location} />
+                  <DetailRow icon={<User className="h-4 w-4" />} label="PIC" value={selected.pic} />
                   <DetailRow icon={<CalendarDays className="h-4 w-4" />} label="Tanggal" value={`${selected.day}, ${selected.date}`} />
                   <DetailRow icon={<Clock3 className="h-4 w-4" />} label="Jam kerja" value={selected.time} />
-                  <DetailRow icon={<MapPin className="h-4 w-4" />} label="Toko" value={selected.location} />
                 </div>
               </div>
 
@@ -151,96 +118,6 @@ export default function Schedule() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function DetailRow({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3">
-      <div className="flex items-center gap-2 text-[#9C8B63]">
-        {icon}
-        <span>{label}</span>
-      </div>
-      <span className="font-medium text-right">{value}</span>
-    </div>
-  );
-}
-
-function SummaryCard({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-2xl border border-[#F5F0E8]/10 bg-[#fff] p-5">
-      <p className="text-4xl font-semibold text-black">{value}</p>
-      <p className="mt-2 text-sm text-black/60">{label}</p>
-    </div>
-  );
-}
-
-type ScheduleListProps = {
-  item: {
-    date: string;
-    day: string;
-    session: string;
-    sessionColor: string;
-    today?: boolean;
-    time: string;
-    location: string;
-    active?: boolean;
-   };
-   onClick: () => void
-};
-
-function ScheduleList({ item, onClick }: ScheduleListProps) {
-  return (
-    <div
-      className={`rounded-2xl border p-5 border-white/10 bg-[#C49A0A] hover:shadow-2xl transition-transform duration-300 hover:-translate-y-2 hover:cursor-pointer mb-4`}
-      onClick={onClick}
-    >
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-3">
-            <h4 className="text-2xl font-medium">{item.date}</h4>
-            {item.today && (
-              <span className="rounded-full bg-[#a67f02] px-3 py-1 text-xs text-white/90 font-medium">
-                Hari ini
-              </span>
-            )}
-          </div>
-          <p className="text-white/60">{item.day}</p>
-        </div>
-
-        <span
-          className={`rounded-full px-4 py-1 text-sm font-medium ${item.sessionColor}`}
-        >
-          {item.session}
-        </span>
-      </div>
-
-      <div className="space-y-3 border-t border-white/10 pt-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white-800">
-            <Clock3 className="h-4 w-4" />
-            <span>Jam kerja</span>
-          </div>
-          <span className="text-right">{item.time}</span>
-        </div>
-
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white-300">
-            <MapPin className="h-4 w-4" />
-            <span>Lokasi</span>
-          </div>
-          <span className="text-right">{item.location}</span>
-        </div>
-      </div>
     </div>
   );
 }
